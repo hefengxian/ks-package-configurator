@@ -158,11 +158,13 @@
                 flex: 1;
                 padding: 0 24px;
 
+                .form-submit .ant-btn{
+                    margin-right: 8px;
+                }
                 .container {
                     overflow: hidden;
 
                     & > .ant-tabs-card > .ant-tabs-content {
-                        height: 120px;
                         margin-top: -16px;
                     }
                     &  > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
@@ -182,8 +184,6 @@
                         background: #fff;
                     }
                 }
-
-
             }
 
             & .footer {
