@@ -158,6 +158,10 @@
                 flex: 1;
                 padding: 0 24px;
 
+                .page-header {
+                    padding: 24px 0;
+                }
+
                 .form-submit .ant-btn{
                     margin-right: 8px;
                 }
