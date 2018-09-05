@@ -94,11 +94,13 @@
 
 <script>
     import {remote, shell} from 'electron'
-    import {Form} from 'ant-design-vue'
+    import baseComponent from '../common/base-component'
 
     export default {
-        name: "common-configurator",
+        name: "database-configurator",
+        mixins: [baseComponent],
         data() {
+            this.getFormConfig('ddd')
             return {
                 currentTab: 'doc',
                 configForm: {
