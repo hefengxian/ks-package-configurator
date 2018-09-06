@@ -44,12 +44,13 @@ export default {
             // console.log(this.params)
         },
         handleOpenFile(defaultPath, model) {
-            console.log(defaultPath, model)
             let path = remote.dialog.showOpenDialog({
                 defaultPath,
                 properties: ['openDirectory']
             })
-            model.value = path[0]
+            if (path && path.length === 1) {
+                model.value = path[0]
+            }
         },
         getConfig(filename) {
             let file = path.join(__static, 'template', 'form', this.module, filename)

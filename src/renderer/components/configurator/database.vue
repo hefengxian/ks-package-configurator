@@ -16,7 +16,6 @@
         <div class="container">
             <a-tabs type="card"
                     :animated="{inkBar: false, tabPane: false}"
-                    @change="onTabChange"
                     defaultActiveKey="doc">
                 <a-tab-pane key="doc">
                     <div slot="tab">
@@ -84,11 +83,14 @@
 
                                 <a-form-item class="form-submit"
                                              :wrapperCol="{ span: 12, offset: 5 }">
-                                    <a-button type="primary" @click="onSubmit">保存</a-button>
+                                    <a-button type="primary"
+                                              :loading="submitting"
+                                              @click="onSubmit">保存</a-button>
                                 </a-form-item>
                             </a-form>
                         </a-card>
 
+                        <!-- 预览 -->
                         <a-card style="margin-top: 16px;">
                             <span slot="title">预览</span>
                             <a-tabs :animated="false">
@@ -107,7 +109,6 @@
 </template>
 
 <script>
-    import {remote, shell} from 'electron'
     import baseComponent from '../common/base-component'
 
     export default {
@@ -115,7 +116,6 @@
         mixins: [baseComponent],
         data() {
             return {
-                currentTab: 'doc',
                 needCopy: false,
                 submitting: false,
             }
@@ -142,12 +142,14 @@
                 // 如果开启了拷贝文件
                 if (this.needCopy) {
                     let modal = this.parseModel()
-                    this.copy(modal['oldPath'], modal['newPath'])
+                    this.copy(modal['oldPath'], modal['newPath']).then(() => {
+                        this.submitting = false
+                    }).catch(e => {
+                        this.submitting = false
+                    })
+                } else {
+                    this.submitting = false
                 }
-                this.submitting = false
-            },
-            onTabChange(key) {
-                this.currentTab = key
             },
         },
     }
