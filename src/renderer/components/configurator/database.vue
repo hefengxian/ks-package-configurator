@@ -15,6 +15,7 @@
 
         <div class="container">
             <a-tabs type="card"
+                    :animated="{inkBar: false, tabPane: false}"
                     @change="onTabChange"
                     defaultActiveKey="doc">
                 <a-tab-pane key="doc">
@@ -22,7 +23,9 @@
                         <a-icon type="file-text"/>
                         文档
                     </div>
-                    <div ref="doc"></div>
+                    <a-card>
+                        <div ref="doc" class="markdown-body" v-html="doc"></div>
+                    </a-card>
                 </a-tab-pane>
                 <a-tab-pane key="config">
                     <div slot="tab">
@@ -34,7 +37,7 @@
                         <a-card title="数据库配置修改">
                             <!--<a href="#" slot="extra">more</a>-->
                             <a-form>
-                                <a-form-item v-for="(item, key) in configForm.items"
+                                <a-form-item v-for="(item, key) in params.formItems"
                                              :key="key"
                                              :labelCol="{ span: 5 }"
                                              :wrapperCol="{ span: 12 }">
@@ -51,6 +54,7 @@
                                                     v-model.trim="item.value">
                                         <a-button icon="folder-open"
                                                   title="打开目录"
+                                                  @click.native="handleOpenFile(item.value, item)"
                                                   slot="enterButton"></a-button>
                                     </a-input-search>
 
@@ -72,7 +76,7 @@
                                             <a-icon type='question-circle-o' />
                                         </a-tooltip>
                                     </span>
-                                    <a-switch>
+                                    <a-switch v-model="needCopy">
                                         <a-icon type="check" slot="checkedChildren"/>
                                         <a-icon type="cross" slot="unCheckedChildren"/>
                                     </a-switch>
@@ -80,10 +84,20 @@
 
                                 <a-form-item class="form-submit"
                                              :wrapperCol="{ span: 12, offset: 5 }">
-                                    <a-button>预览</a-button>
-                                    <a-button type="primary">提交</a-button>
+                                    <a-button type="primary" @click="onSubmit">保存</a-button>
                                 </a-form-item>
                             </a-form>
+                        </a-card>
+
+                        <a-card style="margin-top: 16px;">
+                            <span slot="title">预览</span>
+                            <a-tabs :animated="false">
+                                <a-tab-pane v-for="(template, key) in templates"
+                                            :tab="template.name"
+                                            :key="template.name">
+                                    <pre style="white-space: pre-wrap" v-html="template.contentHighlight"></pre>
+                                </a-tab-pane>
+                            </a-tabs>
                         </a-card>
                     </div>
                 </a-tab-pane>
@@ -100,49 +114,39 @@
         name: "database-configurator",
         mixins: [baseComponent],
         data() {
-            this.getFormConfig('ddd')
             return {
                 currentTab: 'doc',
-                configForm: {
-                    title: '',
-                    items: [
-                        {
-                            type: 'path',
-                            label: '原 Data 目录',
-                            name: 'oldPath',
-                            value: 'D:\\KWM\\Database_Server\\Data',
-                            placeholder: '',
-                        },
-                        {
-                            type: 'path',
-                            label: '新 Data 目录',
-                            name: 'newPath',
-                            value: 'E:\\Data',
-                            placeholder: '',
-                        },
-                        {
-                            type: 'number',
-                            label: 'Innodb pool size',
-                            name: 'poolSize',
-                            value: 1,
-                            placeholder: '',
-                            helpText: '单位 GB，如果是单独的数据库服务器，应该配置为机器物理内存的 70% - 80%',
-                        },
-                    ],
-                }
+                needCopy: false,
+                submitting: false,
+            }
+        },
+        created() {
+            this.init('database')
+        },
+        computed: {
+            templates() {
+                let templates = this.params.templates
+                templates = templates.map(v => {
+                    v = this.render(v)
+                    v = this.highlightTemplate(v)
+                    return v
+                })
+                return templates
             }
         },
         methods: {
-            handleOpenFile(defaultPath, model) {
-                let path = remote.dialog.showOpenDialog({
-                    defaultPath,
-                    properties: ['openDirectory']
-                })
-                model = path[0]
+            onSubmit() {
+                this.submitting = true
+                // 保存配置文件
+                this.saveConfig()
+                // 如果开启了拷贝文件
+                if (this.needCopy) {
+                    let modal = this.parseModel()
+                    this.copy(modal['oldPath'], modal['newPath'])
+                }
+                this.submitting = false
             },
-
             onTabChange(key) {
-                console.log(key)
                 this.currentTab = key
             },
         },

@@ -1,4 +1,6 @@
 import 'ant-design-vue/dist/antd.css'
+import 'github-markdown-css/github-markdown.css'
+import 'prismjs/themes/prism.css'
 
 import Vue from 'vue'
 import Antd from 'ant-design-vue'
