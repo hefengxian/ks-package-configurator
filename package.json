@@ -1,7 +1,7 @@
 {
   "name": "ks-package-configurator",
   "productName": "ks-package-configurator",
-  "version": "0.0.0",
+  "version": "0.0.1beta",
   "author": "hfx <jssmith883@gmail.com>",
   "description": "Knowlesys Package Configurator - for Windows",
   "license": null,
