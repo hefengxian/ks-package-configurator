@@ -15,6 +15,10 @@ import yaml from 'js-yaml'
 import Prism from 'prismjs'
 import Mustache from 'mustache'
 
+require(`prismjs/components/prism-ini`)
+require(`prismjs/components/prism-php-extras`)
+require(`prismjs/components/prism-properties`)
+
 export default {
     data() {
         return {
@@ -25,6 +29,17 @@ export default {
             },
             doc: '',
             module: '',
+        }
+    },
+    computed: {
+        templates() {
+            let templates = this.params.templates
+            templates = templates.map(v => {
+                v = this.render(v)
+                v = this.highlightTemplate(v)
+                return v
+            })
+            return templates
         }
     },
     methods: {
@@ -81,9 +96,9 @@ export default {
             try {
                 let ext = t.templateFile.split('.')
                 ext = ext[ext.length - 1]
-                require(`prismjs/components/prism-${ext}`)
-                t.contentHighlight = Prism.highlight(t.content, Prism.languages[ext], ext)
+                t.contentHighlight = Prism.highlight(t.content, Prism.languages[ext])
             } catch (e) {
+                t.contentHighlight = t.content
                 console.log(e)
             }
             return t
@@ -103,6 +118,7 @@ export default {
             this.params.templates.forEach(v => {
                 fs.writeFile(v.dest, v.content, e => {
                     if (e) {
+                        console.log(e)
                         this.$message.error(e)
                     } else {
                         this.$message.success(`${v.name} 保存成功`)
