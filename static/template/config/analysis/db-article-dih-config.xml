@@ -1,0 +1,194 @@
+<dataConfig>
+	<!--<xi:include href="file:///D:/KIS_Server/Analysis_Server/Application/Tomcat/conf/ds.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />-->
+	<dataSource type="JdbcDataSource" encoding="UTF-8" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://{{{dbHost}}}:{{{dbPort}}}/{{{dbSchema}}}?autoReconnect=true" batchSize="-1" user="{{{dbUser}}}" password="{{{dbPassword}}}"/>
+    <document name="articles">
+	      <entity name="article" pk="ad.Article_Detail_ID" transformer="HTMLStripTransformer"
+				query="
+					select 
+						ad.Article_Detail_ID,
+						ad.Website_No,
+						ad.Media_Type_Code,
+						w.Media_Type_Code AS Raw_Media_Type_Code,
+                        ad.Domain_Code,
+						ad.Article_URL,
+						ad.Article_Title,
+						IF(ac.Article_Abstract, ac.Article_Abstract, ad.Article_Abstract) AS Article_Abstract,
+						ac.Article_Content,
+						ad.Article_Title_FingerPrint,
+						IFNULL(ac.Article_Content_FingerPrint, ad.Article_Abstract_FingerPrint) AS Article_Content_FingerPrint,
+						IFNULL(ad.Order_No_In_Search_Result, 0) AS Order_No_In_Search_Result,
+						IF(ac.Article_Content IS NULL , 0 , 1) AS Has_Content,
+						date_format(date_sub(ad.Extracted_Time,interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Extracted_Time,
+						date_format(date_sub(IFNULL(ad.Article_PubTime, ac.Article_PubTime),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Article_PubTime,
+						date_format(date_sub(IF(IFNULL(ad.Article_PubTime, ac.Article_PubTime) IS NULL, CURRENT_DATE,IFNULL(ad.Article_PubTime, ac.Article_PubTime)),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Filter_PubTime
+					from 
+						article_detail ad 
+                    LEFT JOIN article_content ac ON ad.Record_MD5_ID = ac.Article_Record_MD5_ID
+					LEFT JOIN website w ON ad.Website_No = w.Website_No
+				"
+				deltaQuery=
+					"
+					select
+					ad.Article_Detail_ID as Article_Detail_ID
+					from article_detail ad
+					where
+					Extracted_Time &gt; STR_TO_DATE('${dataimporter.last_index_time}','%Y-%m-%d %H:%i:%s')
+					"
+			>
+				<field column="Article_Detail_ID" name="article_detail_id" />
+				<field column="Article_Content" name="article_content" stripHTML="true" />
+			</entity>
+			
+			<entity name="delta_entity" pk="ad.Article_Detail_ID"  transformer="HTMLStripTransformer"
+				query="
+					select 
+						ad.Article_Detail_ID,
+						ad.Website_No,
+						ad.Media_Type_Code,
+						w.Media_Type_Code AS Raw_Media_Type_Code,
+                        ad.Domain_Code,
+						ad.Article_URL,
+						ad.Article_Title,
+						IF(ac.Article_Abstract, ac.Article_Abstract, ad.Article_Abstract) AS Article_Abstract,
+						ac.Article_Content,
+						ad.Article_Title_FingerPrint,
+						IFNULL(ac.Article_Content_FingerPrint, ad.Article_Abstract_FingerPrint) AS Article_Content_FingerPrint,
+						IFNULL(ad.Order_No_In_Search_Result, 0) AS Order_No_In_Search_Result,
+						IF(ac.Article_Content IS NULL , 0 , 1) AS Has_Content,
+						date_format(date_sub(ad.Extracted_Time,interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Extracted_Time,
+						date_format(date_sub(IFNULL(ad.Article_PubTime, ac.Article_PubTime),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Article_PubTime,
+						date_format(date_sub(IF(IFNULL(ad.Article_PubTime, ac.Article_PubTime) IS NULL, CURRENT_DATE,IFNULL(ad.Article_PubTime, ac.Article_PubTime)),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Filter_PubTime
+					from 
+						article_detail ad 
+                    LEFT JOIN article_content ac ON ad.Record_MD5_ID = ac.Article_Record_MD5_ID
+					LEFT JOIN website w ON ad.Website_No = w.Website_No
+					where ad.Article_Detail_ID BETWEEN ${dataimporter.request.startID} AND ${dataimporter.request.endID}
+
+				">
+				<field column="Article_Detail_ID" name="article_detail_id" />
+				<field column="Article_Content" name="article_content" stripHTML="true" />				
+			</entity>
+			
+			<entity name="updated_article" pk="ad.Article_Detail_ID"  transformer="HTMLStripTransformer"
+				query="
+					select 
+						ad.Article_Detail_ID,
+						ad.Website_No,
+						ad.Media_Type_Code,
+						w.Media_Type_Code AS Raw_Media_Type_Code,
+                        ad.Domain_Code,
+						ad.Article_URL,
+						ad.Article_Title,
+						IF(ac.Article_Abstract, ac.Article_Abstract, ad.Article_Abstract) AS Article_Abstract,
+						ac.Article_Content,
+						ad.Article_Title_FingerPrint,
+						IFNULL(ac.Article_Content_FingerPrint, ad.Article_Abstract_FingerPrint) AS Article_Content_FingerPrint,
+						IFNULL(ad.Order_No_In_Search_Result, 0) AS Order_No_In_Search_Result,
+						IF(ac.Article_Content IS NULL , 0 , 1) AS Has_Content,
+						date_format(date_sub(ad.Extracted_Time,interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Extracted_Time,
+						date_format(date_sub(IFNULL(ad.Article_PubTime, ac.Article_PubTime),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Article_PubTime,
+						date_format(date_sub(IF(IFNULL(ad.Article_PubTime, ac.Article_PubTime) IS NULL, CURRENT_DATE,IFNULL(ad.Article_PubTime, ac.Article_PubTime)),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Filter_PubTime
+					from 
+						article_detail ad 
+                    LEFT JOIN article_content ac ON ad.Record_MD5_ID = ac.Article_Record_MD5_ID
+					LEFT JOIN website w ON ad.Website_No = w.Website_No
+					where 1=1 and (${dataimporter.request.where})
+
+				">
+				<field column="Article_Detail_ID" name="article_detail_id" />	
+				<field column="Article_Content" name="article_content" stripHTML="true" />								
+			</entity>
+			
+			<entity name="specified_article" pk="ad.Article_Detail_ID"  transformer="HTMLStripTransformer"
+				query="
+					select 
+						ad.Article_Detail_ID,
+						ad.Website_No,
+						ad.Media_Type_Code,
+						w.Media_Type_Code AS Raw_Media_Type_Code,
+                        ad.Domain_Code,
+						ad.Article_URL,
+						ad.Article_Title,
+						IF(ac.Article_Abstract, ac.Article_Abstract, ad.Article_Abstract) AS Article_Abstract,
+						ac.Article_Content,
+						ad.Article_Title_FingerPrint,
+						IFNULL(ac.Article_Content_FingerPrint, ad.Article_Abstract_FingerPrint) AS Article_Content_FingerPrint,
+						IFNULL(ad.Order_No_In_Search_Result, 0) AS Order_No_In_Search_Result,
+						IF(ac.Article_Content IS NULL , 0 , 1) AS Has_Content,
+						date_format(date_sub(ad.Extracted_Time,interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Extracted_Time,
+						date_format(date_sub(IFNULL(ad.Article_PubTime, ac.Article_PubTime),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Article_PubTime,
+						date_format(date_sub(IF(IFNULL(ad.Article_PubTime, ac.Article_PubTime) IS NULL, CURRENT_DATE,IFNULL(ad.Article_PubTime, ac.Article_PubTime)),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Filter_PubTime
+					from 
+						article_detail ad 
+                    LEFT JOIN article_content ac ON ad.Record_MD5_ID = ac.Article_Record_MD5_ID
+					LEFT JOIN website w ON ad.Website_No = w.Website_No
+					where article_detail_id in (${dataimporter.request.ids})
+
+				">
+				<field column="Article_Detail_ID" name="article_detail_id" />
+				<field column="Article_Content" name="article_content" stripHTML="true" />								
+			</entity>
+			
+			<entity name="selected_article" pk="ad.Article_Detail_ID"  transformer="HTMLStripTransformer"
+				query="
+					select 
+						ad.Article_Detail_ID,
+						ad.Website_No,
+						ad.Media_Type_Code,
+						w.Media_Type_Code AS Raw_Media_Type_Code,
+                        ad.Domain_Code,
+						ad.Article_URL,
+						ad.Article_Title,
+						IF(ac.Article_Abstract, ac.Article_Abstract, ad.Article_Abstract) AS Article_Abstract,
+						ac.Article_Content,
+						ad.Article_Title_FingerPrint,
+						IFNULL(ac.Article_Content_FingerPrint, ad.Article_Abstract_FingerPrint) AS Article_Content_FingerPrint,
+						IFNULL(ad.Order_No_In_Search_Result, 0) AS Order_No_In_Search_Result,
+						IF(ac.Article_Content IS NULL , 0 , 1) AS Has_Content,
+						date_format(date_sub(ad.Extracted_Time,interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Extracted_Time,
+						date_format(date_sub(IFNULL(ad.Article_PubTime, ac.Article_PubTime),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Article_PubTime,
+						date_format(date_sub(IF(IFNULL(ad.Article_PubTime, ac.Article_PubTime) IS NULL, CURRENT_DATE,IFNULL(ad.Article_PubTime, ac.Article_PubTime)),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Filter_PubTime
+					from 
+						article_detail_selected ad 
+                    LEFT JOIN article_content_selected ac ON ad.Record_MD5_ID = ac.Article_Record_MD5_ID
+					LEFT JOIN website w ON ad.Website_No = w.Website_No
+					where ad.Article_Detail_ID BETWEEN ${dataimporter.request.startID} AND ${dataimporter.request.endID}
+
+				">
+				<field column="Article_Detail_ID" name="article_detail_id" />
+				<field column="Article_Content" name="article_content" stripHTML="true" />								
+			</entity>
+			
+			<entity name="selected_article_by_time" pk="ad.Article_Detail_ID"  transformer="HTMLStripTransformer"
+				query="
+					select 
+						ad.Article_Detail_ID,
+						ad.Website_No,
+						ad.Media_Type_Code,
+						w.Media_Type_Code AS Raw_Media_Type_Code,
+                        ad.Domain_Code,
+						ad.Article_URL,
+						ad.Article_Title,
+						IF(ac.Article_Abstract, ac.Article_Abstract, ad.Article_Abstract) AS Article_Abstract,
+						ac.Article_Content,
+						ad.Article_Title_FingerPrint,
+						IFNULL(ac.Article_Content_FingerPrint, ad.Article_Abstract_FingerPrint) AS Article_Content_FingerPrint,
+						IFNULL(ad.Order_No_In_Search_Result, 0) AS Order_No_In_Search_Result,
+						IF(ac.Article_Content IS NULL , 0 , 1) AS Has_Content,
+						date_format(date_sub(ad.Extracted_Time,interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Extracted_Time,
+						date_format(date_sub(IFNULL(ad.Article_PubTime, ac.Article_PubTime),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Article_PubTime,
+						date_format(date_sub(IF(IFNULL(ad.Article_PubTime, ac.Article_PubTime) IS NULL, CURRENT_DATE,IFNULL(ad.Article_PubTime, ac.Article_PubTime)),interval TIMESTAMPDIFF(HOUR, UTC_TIMESTAMP(),Current_TIMESTAMP()) hour),'%Y-%m-%dT%H:%i:%sZ') AS Filter_PubTime
+					from 
+						article_detail_selected ad 
+                    LEFT JOIN article_content_selected ac ON ad.Record_MD5_ID = ac.Article_Record_MD5_ID
+					LEFT JOIN website w ON ad.Website_No = w.Website_No
+					where ad.Extracted_Time BETWEEN '${dataimporter.request.startTime}' AND '${dataimporter.request.endTime}'
+
+				">
+				<field column="Article_Detail_ID" name="article_detail_id" />	
+				<field column="Article_Content" name="article_content" stripHTML="true" />								
+			</entity>
+			
+	</document>
+</dataConfig>
+
