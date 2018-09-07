@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="config-form">
-                        <a-card title="数据库配置修改">
+                        <a-card :title="params.title">
                             <!--<a href="#" slot="extra">more</a>-->
                             <a-form>
                                 <a-form-item v-for="(item, key) in params.formItems"
@@ -58,7 +58,7 @@
                                     </a-input-search>
 
                                     <!-- 表达类型为数字的时候 -->
-                                    <a-input-number v-else="item.type === 'number'"
+                                    <a-input-number v-else-if="item.type === 'number'"
                                                     v-model="item.value" />
 
                                     <!-- 其他类型，默认为字符串，普通表单 -->
@@ -71,7 +71,7 @@
                                              :wrapperCol="{ span: 12 }">
                                     <span slot="label">拷贝目录
                                         <a-tooltip>
-                                            <span slot="title">是否将原 Data 目录下的文件复制到新的 Data 目录</span>
+                                            <span slot="title">是否将原索引存储目录下的文件复制到新的存储目录</span>
                                             <a-icon type='question-circle-o' />
                                         </a-tooltip>
                                     </span>
@@ -93,10 +93,12 @@
                         <!-- 预览 -->
                         <a-card style="margin-top: 16px;">
                             <span slot="title">预览</span>
-                            <a-tabs :animated="false">
+                            <a-tabs :animated="false" size="small">
                                 <a-tab-pane v-for="(template, key) in templates"
-                                            :tab="template.name"
                                             :key="template.name">
+                                    <span slot="tab">{{template.name}}
+                                        <a-tooltip :title="template.desc"><a-icon type='question-circle-o' /></a-tooltip>
+                                    </span>
                                     <pre style="white-space: pre-wrap" v-html="template.contentHighlight"></pre>
                                 </a-tab-pane>
                             </a-tabs>
@@ -121,18 +123,7 @@
             }
         },
         created() {
-            this.init('database')
-        },
-        computed: {
-            templates() {
-                let templates = this.params.templates
-                templates = templates.map(v => {
-                    v = this.render(v)
-                    v = this.highlightTemplate(v)
-                    return v
-                })
-                return templates
-            }
+            this.init('analysis')
         },
         methods: {
             onSubmit() {
@@ -142,7 +133,7 @@
                 // 如果开启了拷贝文件
                 if (this.needCopy) {
                     let modal = this.parseModel()
-                    this.copy(modal['oldPath'], modal['newPath']).then(() => {
+                    this.copy(modal['oldIndexPath'], modal['newIndexPath']).then(() => {
                         this.submitting = false
                     }).catch(e => {
                         this.submitting = false
