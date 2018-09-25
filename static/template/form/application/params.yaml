@@ -60,7 +60,7 @@ formItems: [
       type: 'string',
       label: '重新分类地址',
       name: 'reclassifyUrl',
-      value: 'http://192.168.1.10:80/kwm_subject_classifier',
+      value: 'http://localhost:80/subject-classifier',
       placeholder: '',
       helpText: '重新分类调用的地址',
   },
@@ -87,5 +87,23 @@ templates: [
     desc: 'KWMCloud 配置文件',
     templateFile: 'cloud-configure.php',
     dest: 'D:\KWM\Application_Server\www_root\kwmcloud\server\app\lib\Config\Configure.php',
+  },
+  {
+    name: 'Classifier_Configure.php',
+    desc: '手工分类、重新分类模块的配置文件',
+    templateFile: 'subject-classifier-config.php',
+    dest: 'D:\KWM\Application_Server\www_root\subject-classifier\app\lib\Config\Configure.php',
+  },
+  {
+    name: 'kwm_config.js',
+    desc: 'KWM 客户端的配置',
+    templateFile: 'kwm-config.js',
+    dest: 'D:\KWM\Application_Server\www_root\kwm\static\config.js',
+  },
+  {
+    name: 'cloud_config.js',
+    desc: 'KWMCloud 客户端的配置',
+    templateFile: 'cloud-config.js',
+    dest: 'D:\KWM\Application_Server\www_root\kwmcloud\static\config.js',
   },
 ]
