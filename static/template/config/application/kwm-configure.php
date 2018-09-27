@@ -3,6 +3,8 @@
  * Copyright © 2016-present, Knowlesys, Inc.
  * All rights reserved.
  *
+ * SourceGuardian:DO_NOT_ENCODE
+ *
  * Configure.php
  *
  * @author: HFX 2016-12-22 14-25
@@ -61,7 +63,7 @@ class Configure
 
 
     /**
-     * 数据库配置
+     * 通用数据库配置
      */
     const DB = [
         'dbname' => '{{{dbSchema}}}',                // 数据库名
@@ -72,9 +74,79 @@ class Configure
         'driver' => 'pdo_mysql',                // PDO驱动，固定为MySQL，请勿修改
         'charset' => 'UTF8',                    // 数据库使用编码
         'driverOptions' => [
-    \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-    // \PDO::ATTR_CASE => \PDO::CASE_LOWER
-]
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+        ]
+    ];
+
+    /**
+     * 只读数据库信息，一般配置了从库才需要如此配置
+     * 如果只有一个数据库两个配置保持一致即可
+     */
+    const READ_ONLY_DB = [
+        'dbname' => '{{{dbSchema}}}',                // 数据库名
+        'user' => '{{{roDbUser}}}',                    // 数据库用户名
+        'password' => '{{{roDbPassword}}}',                // 数据库密码
+        'port' => '{{{dbPort}}}',                         // 端口号
+        'host' => '{{{roDbHost}}}',              // 数据库地址
+        'driver' => 'pdo_mysql',                // PDO驱动，固定为MySQL，请勿修改
+        'charset' => 'UTF8',                    // 数据库使用编码
+        'driverOptions' => [
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+        ]
+    ];
+
+    /**
+     * 运营后台监测的所有数据库配置列表
+     */
+    const MONITOR_DATABASE_CONFIGURE_LIST = [
+        // 应用主数据库
+        'DB' => [
+            'dbname' => '{{{dbSchema}}}',                // 数据库名
+            'user' => '{{{dbUser}}}',                    // 数据库用户名
+            'password' => '{{{dbPassword}}}',                // 数据库密码
+            'port' => '{{{dbPort}}}',                         // 端口号
+            'host' => '{{{dbHost}}}',              // 数据库地址
+            'driver' => 'pdo_mysql',                // PDO驱动，固定为MySQL，请勿修改
+            'charset' => 'UTF8',                    // 数据库使用编码
+            'driverOptions' => [
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            ]
+        ],
+        // 从库
+        'RO_DB' => [
+            'dbname' => '{{{roDbSchema}}}',                // 数据库名
+            'user' => '{{{roDbUser}}}',                    // 数据库用户名
+            'password' => '{{{roDbPassword}}}',                // 数据库密码
+            'port' => '{{{roDbPort}}}',                         // 端口号
+            'host' => '{{{roDbHost}}}',              // 数据库地址
+            'driver' => 'pdo_mysql',                // PDO驱动，固定为MySQL，请勿修改
+            'charset' => 'UTF8',                    // 数据库使用编码
+            'driverOptions' => [
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            ]
+        ],
+    ];
+
+
+    /**
+     * ES历史库配置列表
+     */
+    const ES_SERVER_CONFIGURE_LIST = [
+        'ElasticSearch' => [
+            'main_url' => 'http://192.168.1.231:5601',
+            'check_state_url' => 'http://192.168.1.231:9200/_cat/health',
+        ],
+    ];
+
+
+    /**
+     * Redis库配置列表
+     */
+    const REDIS_SERVER_CONFIGURE_LIST = [
+        'Redis' => [
+            'check_state_url' => 'http://192.168.1.230/hexists/detail_md5_hash?key=fc2a2a5f526cbd4c0efdfe0c7c19e3a8',
+            'detail_md5_count_url' => 'http://192.168.2.230:7379/hlen/detail_md5_hash',
+        ],
     ];
 
 
@@ -89,6 +161,11 @@ class Configure
             'timeout' => 30,
         ],
     ];
+
+    /**
+     * 微博传播分析的接口地址
+     */
+    const WEIBO_API = 'http://192.168.1.120:8383/sinaWeiboSpreadAnalyzer';
 
 
     /**
@@ -117,7 +194,6 @@ class Configure
      */
     const CACHE_DIR = __DIR__ . '/../../runtime/';
 
-    const WEIBO_API = 'http://192.168.1.161:8080/api';
 
     //采集批处理存放在web服务器上的目录
     const EXTRACTION_BATCH_FILE_DIR_APP = 'D:\\KWM\\Extraction_Server\\Run_Batch\\Run_Batch_All';
@@ -213,5 +289,12 @@ class Configure
      * 同步程序配置文件路径
      */
     const Sync_Progress_Configure_Path = 'D:\\KWM\\Database_Server\\DBSynchronizer\\Config\\';
+
+
+    /**
+     * 限制客户启用的情感词数
+     */
+    const CLIENT_IS_ENABLED_SENTIMENT_WORDS_COUNT_LIMIT = 5000;
+
 
 }

@@ -1,0 +1,131 @@
+#
+#
+#
+
+title: '分析服务器配置修改'
+
+# 表单项
+formItems: [
+  {
+      type: 'number',
+      label: 'MySQL 端口',
+      name: 'dbPort',
+      value: 3306,
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '数据库',
+      name: 'dbSchema',
+      value: 'mymonitor',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '主库 IP',
+      name: 'dbHost',
+      value: '127.0.0.1',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '主库账号',
+      name: 'dbUser',
+      value: 'mmt_app',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '主库密码',
+      name: 'dbPassword',
+      value: 'poms@db',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '从库 IP',
+      name: 'roDbHost',
+      value: '127.0.0.1',
+      placeholder: '',
+      helpText: '如果是只有一个数据库，将主从库配置保持一致即可',
+  },
+  {
+      type: 'string',
+      label: '从库账号',
+      name: 'roDbUser',
+      value: 'mmt_app',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '从库密码',
+      name: 'roDbPassword',
+      value: 'poms@db',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: 'Solr IP',
+      name: 'solrHost',
+      value: '127.0.0.1',
+      placeholder: '',
+  },
+  {
+      type: 'number',
+      label: 'Solr 端口',
+      name: 'solrPort',
+      value: 8081,
+      placeholder: '',
+      helpText: '该端口是 Tomcat 监听的端口，如果 Tomcat 端口更改，此处也要修改',
+  },
+  {
+      type: 'string',
+      label: '重新分类地址',
+      name: 'reclassifyUrl',
+      value: 'http://localhost:80/subject-classifier',
+      placeholder: '',
+      helpText: '重新分类调用的地址，一般修改 IP 即可，IP 和 APP 的 IP 保持一致',
+  },
+]
+
+
+# 模板配置
+# {
+#   name: '',       # 名称
+#   desc: '',       # 详细描述
+#   templateFile: '',   # 模板路径（相对路径）
+#   dest: '',       # 目标路径，生成新内容之后存放的路径
+# },
+# 注意，name 不能一样
+templates: [
+  {
+    name: '1_Configure.php',
+    desc: 'KWM2017 配置文件',
+    templateFile: 'kwm-configure.php',
+    dest: 'D:\KWM\Application_Server\www_root\kwm\server\app\lib\Config\Configure.php',
+  },
+  {
+    name: '2_Configure.php',
+    desc: 'KWMCloud 配置文件',
+    templateFile: 'cloud-configure.php',
+    dest: 'D:\KWM\Application_Server\www_root\kwmcloud\server\app\lib\Config\Configure.php',
+  },
+  {
+      name: 'config.inc',
+      desc: '手工、重新分类的配置文件',
+      templateFile: 'subject-classifier-config.php',
+      dest: 'D:\KWM\Application_Server\www_root\subject-classifier\config\config.inc',
+  },
+  {
+    name: 'kwm_config.js',
+    desc: 'KWM 客户端的配置',
+    templateFile: 'kwm-config.js',
+    dest: 'D:\KWM\Application_Server\www_root\kwm\static\config.js',
+  },
+  {
+    name: 'cloud_config.js',
+    desc: 'KWMCloud 客户端的配置',
+    templateFile: 'cloud-config.js',
+    dest: 'D:\KWM\Application_Server\www_root\kwmcloud\static\config.js',
+  },
+]

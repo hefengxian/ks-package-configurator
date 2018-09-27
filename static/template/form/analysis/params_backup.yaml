@@ -1,0 +1,129 @@
+#
+#
+#
+
+title: '分析服务器配置修改'
+
+# 表单项
+formItems: [
+  {
+      type: 'string',
+      label: 'MySQL IP',
+      name: 'dbHost',
+      value: '127.0.0.1',
+      placeholder: '',
+  },
+  {
+      type: 'number',
+      label: 'MySQL 端口',
+      name: 'dbPort',
+      value: 3306,
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '数据库',
+      name: 'dbSchema',
+      value: 'mymonitor',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '数据库账号',
+      name: 'dbUser',
+      value: 'mmt_app',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '数据库密码',
+      name: 'dbPassword',
+      value: 'poms@db',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: 'Solr IP',
+      name: 'solrHost',
+      value: '127.0.0.1',
+      placeholder: '',
+  },
+  {
+      type: 'number',
+      label: 'Solr 端口',
+      name: 'solrPort',
+      value: 8081,
+      placeholder: '',
+      helpText: '该端口是 Tomcat 监听的端口，如果 Tomcat 端口更改，此处也要修改',
+  },
+  {
+      type: 'number',
+      label: 'Solr 索引保留天数',
+      name: 'solrIndexKeepDays',
+      value: 60,
+      placeholder: '',
+      helpText: '超过设置的天数的索引数据将被删除',
+  },
+  {
+      type: 'path',
+      label: '原索引存储目录',
+      name: 'oldIndexPath',
+      value: 'D:\KWM\Analysis_Server\Solr_Data',
+      placeholder: '',
+  },
+  {
+      type: 'path',
+      label: '新索引存储目录',
+      name: 'newIndexPath',
+      value: 'E:\Solr_Data',
+      placeholder: '',
+  },
+]
+
+
+# 模板配置
+# {
+#   name: '',       # 名称
+#   desc: '',       # 详细描述
+#   templateFile: '',   # 模板路径（相对路径）
+#   dest: '',       # 目标路径，生成新内容之后存放的路径
+# },
+# 注意，name 不能一样
+templates: [
+  {
+    name: 'config.inc',
+    desc: '自动分类的配置文件',
+    templateFile: 'subject-classifier-config.php',
+    dest: 'D:\KWM\Analysis_Server\www_root\subject-classifier\config\config.inc',
+  },
+  {
+    name: 'config.conf',
+    desc: '热词程序配置',
+    templateFile: 'hot-subject-word-config.ini',
+    dest: 'D:\KWM\Analysis_Server\python_app\HotSubjectWordExtractor\Config\config.conf',
+  },
+  {
+    name: '1dih-config.xml',
+    desc: 'Solr 数据库配置（Article_Detail Core） Data Import Handler 配置文件',
+    templateFile: 'db-article-dih-config.xml',
+    dest: 'D:\KWM\Analysis_Server\tomcat_root\solr\solr_home\db_article\conf\db-data-config.xml',
+  },
+  {
+    name: '2dih-config.xml',
+    desc: 'Solr 数据库配置（Content Core） Data Import Handler 配置文件',
+    templateFile: 'db-content-dih-config.xml',
+    dest: 'D:\KWM\Analysis_Server\tomcat_root\solr\solr_home\db_article_content\conf\db-data-config.xml',
+  },
+  {
+    name: '1core.properties',
+    desc: 'Solr Core（Detail Core） core.properties，主要配置索引数据存储在什么地方',
+    templateFile: 'db-article-core.properties',
+    dest: 'D:\KWM\Analysis_Server\tomcat_root\solr\solr_home\db_article\core.properties',
+  },
+  {
+    name: '2core.properties',
+    desc: 'Solr Core（Content Core）core.properties，主要配置索引数据存储在什么地方',
+    templateFile: 'db-content-core.properties',
+    dest: 'D:\KWM\Analysis_Server\tomcat_root\solr\solr_home\db_article_content\core.properties',
+  },
+]

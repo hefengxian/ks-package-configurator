@@ -1,48 +1,23 @@
-#
-#
-#
-
 title: ''
-
-# 表单项
-formItems: [
-  {
-      type: 'path',
-      label: '原 Data 目录',
-      name: 'oldPath',
-      value: 'D:\KWM\Database_Server\Data',
-      placeholder: '',
-  },
-  {
-      type: 'path',
-      label: '新 Data 目录',
-      name: 'newPath',
-      value: 'E:\Data',
-      placeholder: '',
-  },
-  {
-      type: 'number',
-      label: 'Innodb pool size',
-      name: 'poolSize',
-      value: 1,
-      placeholder: '',
-      helpText: '单位 GB，如果是单独的数据库服务器，应该配置为机器物理内存的 70% - 80%',
-  },
-]
-
-
-# 模板配置
-# {
-#   name: '',       # 名称
-#   desc: '',       # 详细描述
-#   templateFile: '',   # 模板路径（相对路径）
-#   dest: '',       # 目标路径，生成新内容之后存放的路径
-# },
-templates: [
-  {
-    name: 'my.ini',
-    desc: 'MySQL 配置文件',
-    templateFile: 'my.ini',
-    dest: 'D:\KWM\Base\MySQL\my.ini',
-  },
-]
+formItems:
+  - type: path
+    label: 原 Data 目录
+    name: oldPath
+    value: 'D:\KWM\Database_Server\Data'
+    placeholder: ''
+  - type: path
+    label: 新 Data 目录
+    name: newPath
+    value: 'E:\Data'
+    placeholder: ''
+  - type: number
+    label: Innodb pool size
+    name: poolSize
+    value: 4
+    placeholder: ''
+    helpText: 单位 GB，如果是单独的数据库服务器，应该配置为机器物理内存的 70% - 80%
+templates:
+  - name: my.ini
+    desc: MySQL 配置文件
+    templateFile: my.ini
+    dest: 'D:\KWM\Base\MySQL\my.ini'
