@@ -115,7 +115,15 @@ export default {
             return model
         },
         saveConfig() {
+            // 保存生成的项目配置文件
+            let templates = []
             this.params.templates.forEach(v => {
+                templates.push({
+                    name: v.name,
+                    desc: v.desc,
+                    templateFile: v.templateFile,
+                    dest: v.dest,
+                })
                 fs.writeFile(v.dest, v.content, e => {
                     if (e) {
                         console.log(e)
@@ -124,6 +132,19 @@ export default {
                         this.$message.success(`${v.name} 保存成功`)
                     }
                 })
+            })
+            // 保存替换程序的配置文件，下次启动，或者拷贝到其他机器上都可以读取
+            let config = {...this.params}
+            config.templates = templates
+            this.saveConfiguratorConfig(config)
+        },
+        saveConfiguratorConfig(config) {
+            // 将用户修改过的值存起来
+            let file = path.join(__static, 'template', 'form', this.module, 'params.yaml')
+            fs.writeFile(file, yaml.safeDump(config), e => {
+                if (e) {
+                    console.log(e)
+                }
             })
         },
         copy(src, dest) {
