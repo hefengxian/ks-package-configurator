@@ -7,13 +7,6 @@ title: '分析服务器配置修改'
 # 表单项
 formItems: [
   {
-      type: 'string',
-      label: 'MySQL IP',
-      name: 'dbHost',
-      value: '127.0.0.1',
-      placeholder: '',
-  },
-  {
       type: 'number',
       label: 'MySQL 端口',
       name: 'dbPort',
@@ -29,15 +22,44 @@ formItems: [
   },
   {
       type: 'string',
-      label: '数据库账号',
+      label: '主库 IP',
+      name: 'dbHost',
+      value: '127.0.0.1',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '主库账号',
       name: 'dbUser',
       value: 'mmt_app',
       placeholder: '',
   },
   {
       type: 'string',
-      label: '数据库密码',
+      label: '主库密码',
       name: 'dbPassword',
+      value: 'poms@db',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '从库 IP',
+      name: 'roDbHost',
+      value: '127.0.0.1',
+      placeholder: '',
+      helpText: '如果是只有一个数据库，将主从库配置保持一致即可',
+  },
+  {
+      type: 'string',
+      label: '从库账号',
+      name: 'roDbUser',
+      value: 'mmt_app',
+      placeholder: '',
+  },
+  {
+      type: 'string',
+      label: '从库密码',
+      name: 'roDbPassword',
       value: 'poms@db',
       placeholder: '',
   },
@@ -62,7 +84,7 @@ formItems: [
       name: 'reclassifyUrl',
       value: 'http://localhost:80/subject-classifier',
       placeholder: '',
-      helpText: '重新分类调用的地址',
+      helpText: '重新分类调用的地址，一般修改 IP 即可，IP 和 APP 的 IP 保持一致',
   },
 ]
 
@@ -89,10 +111,10 @@ templates: [
     dest: 'D:\KWM\Application_Server\www_root\kwmcloud\server\app\lib\Config\Configure.php',
   },
   {
-    name: 'Classifier_Configure.php',
-    desc: '手工分类、重新分类模块的配置文件',
-    templateFile: 'subject-classifier-config.php',
-    dest: 'D:\KWM\Application_Server\www_root\subject-classifier\app\lib\Config\Configure.php',
+      name: 'config.inc',
+      desc: '手工、重新分类的配置文件',
+      templateFile: 'subject-classifier-config.php',
+      dest: 'D:\KWM\Application_Server\www_root\subject-classifier\config\config.inc',
   },
   {
     name: 'kwm_config.js',

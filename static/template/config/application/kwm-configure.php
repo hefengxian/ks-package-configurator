@@ -95,6 +95,24 @@ class Configure
         ]
     ];
 
+
+    /**
+     * 运营后台监测的应用主库配置
+     */
+    const MONITOR_MAIN_DATABASE_CONFIGURE = [
+        'dbname' => 'mymonitor',                // 数据库名
+        'user' => 'root',                       // 数据库用户名
+        'password' => 'poms@db',                // 数据库密码
+        'port' => 3306,                         // 端口号
+        'host' => '{{{dbHost}}}',              // 数据库地址
+        'driver' => 'pdo_mysql',                // PDO驱动，固定为MySQL，请勿修改
+        'charset' => 'UTF8',                    // 数据库使用编码
+        'driverOptions' => [
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+        ]
+    ];
+
+
     /**
      * 运营后台监测的所有数据库配置列表
      */
@@ -114,10 +132,10 @@ class Configure
         ],
         // 从库
         'RO_DB' => [
-            'dbname' => '{{{roDbSchema}}}',                // 数据库名
+            'dbname' => '{{{dbSchema}}}',                // 数据库名
             'user' => '{{{roDbUser}}}',                    // 数据库用户名
             'password' => '{{{roDbPassword}}}',                // 数据库密码
-            'port' => '{{{roDbPort}}}',                         // 端口号
+            'port' => '{{{dbPort}}}',                         // 端口号
             'host' => '{{{roDbHost}}}',              // 数据库地址
             'driver' => 'pdo_mysql',                // PDO驱动，固定为MySQL，请勿修改
             'charset' => 'UTF8',                    // 数据库使用编码
@@ -127,15 +145,24 @@ class Configure
         ],
     ];
 
-
+    /**
+     * Solr分析搜索服务器配置列表
+     */
+    const SOLR_SERVER_CONFIGURE_LIST = [
+        // 分析主服务器
+        'Main_Solr' => [
+            'Server_type' => '主服务器',
+            'solr_admin_url' => 'http://{{{solrHost}}}:{{{solrPort}}}/solr/index.html#/',
+        ],
+    ];
     /**
      * ES历史库配置列表
      */
     const ES_SERVER_CONFIGURE_LIST = [
-        'ElasticSearch' => [
+        /*'ElasticSearch' => [
             'main_url' => 'http://192.168.1.231:5601',
             'check_state_url' => 'http://192.168.1.231:9200/_cat/health',
-        ],
+        ],*/
     ];
 
 
@@ -144,8 +171,10 @@ class Configure
      */
     const REDIS_SERVER_CONFIGURE_LIST = [
         'Redis' => [
-            'check_state_url' => 'http://192.168.1.230/hexists/detail_md5_hash?key=fc2a2a5f526cbd4c0efdfe0c7c19e3a8',
-            'detail_md5_count_url' => 'http://192.168.2.230:7379/hlen/detail_md5_hash',
+            'name' => 'db0',       // 库名
+            'info_url' => 'http://192.168.2.230:7379/info',      // 配置信息查看地址
+            'check_state_url' => 'http://192.168.1.230/hexists/detail_md5_hash?key=fc2a2a5f526cbd4c0efdfe0c7c19e3a8',   // 检查运行状态地址
+            'detail_md5_count_url' => 'http://192.168.2.230:7379/hlen/detail_md5_hash',     // 查看Detail Md5 缓存总数地址
         ],
     ];
 
@@ -167,6 +196,17 @@ class Configure
      */
     const WEIBO_API = 'http://192.168.1.120:8383/sinaWeiboSpreadAnalyzer';
 
+
+    /**
+     * IK词典热更新的地址
+     */
+    const IK_DICTIONARY_UPDATE_URL = 'http://{{{solrHost}}}:{{{solrPort}}}/solr/db_article/IKDicUpdateHandler';
+
+
+    /**
+     * 分类新建主题的接口地址，用solr主服务器分类，速度更快
+     */
+    const SUBJECT_DO_CLASSIFY_URL = '{{{reclassifyUrl}}}/app/agent/subject_classifier_agent.php';
 
     /**
      * 重新分类主题的接口地址
@@ -296,5 +336,17 @@ class Configure
      */
     const CLIENT_IS_ENABLED_SENTIMENT_WORDS_COUNT_LIMIT = 5000;
 
+    /**
+     * 正式客户的搜索词是否订阅微博缺省值
+     */
+    const CLIENT_TO_SEARCH_KEYWORD_IS_FOR_SNS_WEBSITE_DEFAULT_VALUE_FOR_FORMAL_CLIENT = 1;
+
+    /**
+     * 试用客户的搜索词是否订阅微博缺省值
+     */
+    const CLIENT_TO_SEARCH_KEYWORD_IS_FOR_SNS_WEBSITE_DEFAULT_VALUE_FOR_TRIAL_CLIENT = 0;
+
+    // 同步最大延时(秒)，InformGenerator 中使用，当最早待同步记录 等待时间超过此值时，认为同步异常
+    const SYNC_MAX_DELAY_TIME = 3600;
 
 }
