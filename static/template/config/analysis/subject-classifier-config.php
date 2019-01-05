@@ -91,16 +91,17 @@ define('CFG_WORD_DIVISION_EXPANSION_COEFFICIENT', 2); //solr 中文分词膨胀�
 define('CFG_SUBJECT_CLASSIFY_TIME_LIMIT', 0.5); //主题分类时间限制，单位：小时，默认0.5
 
 //分布式分类 （有多台分类服务器）  策略：指定服务器数量(2)，本机的ID (1,2), 支持多个，以英文逗号分隔
-define('SOLR_CLASSIFY_MUTI_SERVERS', 'on');  // 是否启用多台分类服务器
-define('SOLR_CLASSIFY_SERVER_COUNT', 4);   //分类服务器数量 默认为 1
+define('SOLR_CLASSIFY_MUTI_SERVERS', 'off');  // 是否启用多台分类服务器，off 或 on
+define('SOLR_CLASSIFY_SERVER_COUNT', 1);   //分类服务器数量 默认为 1
 define('SOLR_CLASSIFY_SERVER_NODE_NUMS', '1');   //分类服务器本机的编号，从1开始，可以支持多个，以逗号分隔，默认为 1
+
+define('SOLR_CLASSIFY_SERVER_ID', '10');      // 分类服务器本机的IP最后一段十进制数，例如192.168.1.10，SERVER_ID为10
 
 //主题情感级别，用于分开处理分类情感词多的主题
 define('CFG_CLASSIFY_SENTIMENT_LEVEL_MIN', 0);
-define('CFG_CLASSIFY_SENTIMENT_LEVEL_MAX', 30);
+define('CFG_CLASSIFY_SENTIMENT_LEVEL_MAX', 100);
 
 //评分参数设置
 define('RELEVANCY_PROCESS_ARTICLE_COUNT', 1000);
 define('SCORE_ERROR_LOG_FILE_NAME', 'score_error.log');
 define('SCORE_TIME_LOG_FILE_NAME', 'score_time.log');
-
