@@ -126,6 +126,19 @@
             this.init('analysis')
         },
         methods: {
+            // 覆盖一下方法，特殊处理一下目录路径（Solr 配置中不能使用反斜杠）
+            parseModel() {
+                let model = {}
+                this.params.formItems.forEach(v => {
+                    // Solr core.properties 中的路径改成正斜杠
+                    if (v.name === 'newIndexPath') {
+                        model[v.name] = v.value.replace('\\', '/')
+                    } else {
+                        model[v.name] = v.value
+                    }
+                })
+                return model
+            },
             onSubmit() {
                 this.submitting = true
                 // 保存配置文件
