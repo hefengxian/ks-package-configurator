@@ -132,7 +132,7 @@
                 this.params.formItems.forEach(v => {
                     // Solr core.properties 中的路径改成正斜杠
                     if (v.name === 'newIndexPath') {
-                        model[v.name] = v.value.replace('\\', '/')
+                        model[v.name] = v.value.replace(/\\/gi, '/')
                     } else {
                         model[v.name] = v.value
                     }
